@@ -22,9 +22,10 @@ RUN add-apt-repository ppa:libretro/stable && \
 	apt-get install -y retroarch
 
 #Copy the files for audio and NGINX
-COPY default.pa client.conf /etc/pulse/
-COPY nginx.conf /etc/nginx/
-COPY webaudio.js /usr/share/novnc/core/
+COPY ./config/default.pa ./config/client.conf /etc/pulse/
+COPY ./config/client.conf /etc/pulse/
+COPY ./config/nginx.conf /etc/nginx/
+COPY ./config/webaudio.js /usr/share/novnc/core/
 
 #Inject code for audio in the NoVNC client
 RUN sed -i "/import RFB/a \
@@ -62,8 +63,8 @@ EXPOSE 80
 RUN mkdir /roms
 
 #Copy in RetoArch config to remap keys
-COPY retroarch.cfg /root/.config/retroarch/retroarch.cfg
+COPY /config/retroarch.cfg /root/.config/retroarch/retroarch.cfg
 
 #Copy in supervisor configuration for startup
-COPY supervisord.conf /etc/supervisor/supervisord.conf
+COPY ./config/supervisord.conf /etc/supervisor/supervisord.conf
 ENTRYPOINT [ "supervisord", "-c", "/etc/supervisor/supervisord.conf" ]
